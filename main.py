@@ -15,20 +15,35 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     
     clock = pygame.time.Clock()
+    clock.tick(60)
     dt = 0
-    x = 0
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     
-    while x < 1:
-        log_state()
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+        
+        # Update delta time
+        dt = clock.get_time() / 1000.0  # Delta time in seconds. 
+        
+        #Game State Update
+        updatable.update(dt)
+        for updates in drawable:
+            updates.draw(screen)
+        
+        #Log after update to game state
+        log_state() 
+        
+        #Draw
         screen.fill("black")
-        clock.tick(60)
-        dt = clock.get_time() / 1000.0  # Delta time in seconds.
-        player.draw(screen) 
+        player.draw(screen)
         pygame.display.flip()
+        
+        
         print(f"{dt} seconds have passed since the last frame.")
     
 
